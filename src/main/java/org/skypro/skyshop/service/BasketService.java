@@ -22,18 +22,14 @@ public class BasketService {
     }
 
     public void addProduct(UUID id) {
-        Product product = storageService.getProductById(id)
-                .orElseThrow(IllegalArgumentException::new);
-
+        Product product = storageService.getProductById(id);   // исключение внутри сервиса
         productBasket.addProduct(product.getId());
     }
 
     public UserBasket getUserBasket() {
         List<BasketItem> items = productBasket.getProducts().entrySet().stream()
                 .map(entry -> {
-                    Product product = storageService
-                            .getProductById(entry.getKey())
-                            .orElseThrow();
+                    Product product = storageService.getProductById(entry.getKey());
                     return new BasketItem(product, entry.getValue());
                 })
                 .toList();
