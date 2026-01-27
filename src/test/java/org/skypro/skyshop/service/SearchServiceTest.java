@@ -1,5 +1,4 @@
 package org.skypro.skyshop.service;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,10 +7,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.skypro.skyshop.model.search.Searchable;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
 
 @ExtendWith(MockitoExtension.class)
 class SearchServiceTest {
