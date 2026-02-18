@@ -46,4 +46,3 @@ public class StudentController {
         return service.getAll();
     }
 }
-
