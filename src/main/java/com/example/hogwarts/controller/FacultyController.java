@@ -1,6 +1,7 @@
 package com.example.hogwarts.controller;
 
 import com.example.hogwarts.model.Faculty;
+import com.example.hogwarts.model.Student;
 import com.example.hogwarts.service.FacultyService;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,5 +44,15 @@ public class FacultyController {
     @GetMapping
     public Collection<Faculty> getAll() {
         return service.getAll();
+    }
+
+    @GetMapping("/search")
+    public List<Faculty> search(@RequestParam String query) {
+        return service.search(query);
+    }
+
+    @GetMapping("/{id}/students")
+    public List<Student> getStudents(@PathVariable Long id) {
+        return service.getStudents(id);
     }
 }
