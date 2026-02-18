@@ -45,3 +45,4 @@ public class FacultyController {
         return service.getAll();
     }
 }
+

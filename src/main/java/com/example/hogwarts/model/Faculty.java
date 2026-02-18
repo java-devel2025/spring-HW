@@ -46,3 +46,4 @@ public class Faculty {
         this.color = color;
     }
 }
+
