@@ -58,3 +58,5 @@ public class StudentController {
         return service.getFaculty(id);
     }
 }
+
+
