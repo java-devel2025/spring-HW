@@ -2,6 +2,7 @@ package com.example.hogwarts.controller;
 import com.example.hogwarts.model.Faculty;
 import com.example.hogwarts.model.Student;
 import com.example.hogwarts.service.StudentService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.List;
@@ -23,8 +24,12 @@ public class StudentController {
     }
 
     @GetMapping("/{id}")
-    public Student get(@PathVariable Long id) {
-        return service.get(id);
+    public ResponseEntity<Student> get(@PathVariable Long id) {
+        Student student = service.get(id);
+        if (student == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(student);
     }
 
     @PutMapping

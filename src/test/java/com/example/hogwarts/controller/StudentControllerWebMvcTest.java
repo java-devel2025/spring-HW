@@ -9,9 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
 import java.util.List;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,7 +48,7 @@ class StudentControllerWebMvcTest {
     @Test
     void updateStudent() throws Exception {
 
-        Student updated = new Student(1L, "Harry Updated", 12);
+        Student updated = new Student(1L, "Миша Updated", 12);
 
         Mockito.when(studentService.update(Mockito.any(Student.class)))
                 .thenReturn(updated);
@@ -60,12 +58,12 @@ class StudentControllerWebMvcTest {
                         .content("""
                             {
                               "id":1,
-                              "name":"Harry Updated",
+                              "name":"Миша Updated",
                               "age":12
                             }
                             """))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Harry Updated"))
+                .andExpect(jsonPath("$.name").value("Миша Updated"))
                 .andExpect(jsonPath("$.age").value(12));
     }
 
@@ -84,7 +82,7 @@ class StudentControllerWebMvcTest {
     void findByAge() throws Exception {
 
         List<Student> students = List.of(
-                new Student(1L, "Harry", 11),
+                new Student(1L, "Миша", 11),
                 new Student(2L, "Ron", 11)
         );
 
@@ -95,7 +93,7 @@ class StudentControllerWebMvcTest {
                         .param("age", "11"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].name").value("Harry"))
+                .andExpect(jsonPath("$[0].name").value("Миша"))
                 .andExpect(jsonPath("$[1].name").value("Ron"));
     }
 
@@ -103,7 +101,7 @@ class StudentControllerWebMvcTest {
     void getAllStudents() throws Exception {
 
         List<Student> students = List.of(
-                new Student(1L, "Harry", 11),
+                new Student(1L, "Миша", 11),
                 new Student(2L, "Hermione", 12)
         );
 
@@ -113,7 +111,7 @@ class StudentControllerWebMvcTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/student"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].name").value("Harry"))
+                .andExpect(jsonPath("$[0].name").value("Миша"))
                 .andExpect(jsonPath("$[1].name").value("Hermione"));
     }
 }
