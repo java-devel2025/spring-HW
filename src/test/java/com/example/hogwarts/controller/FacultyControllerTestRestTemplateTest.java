@@ -13,23 +13,27 @@ import org.springframework.http.ResponseEntity;
 class FacultyControllerRestTemplateTest {
 
     @Autowired
-    private TestRestTemplate rest;
+    TestRestTemplate rest;
 
-    @Test
-    void createFaculty() {
-        Faculty faculty = new Faculty(null,"Ravenclaw","Blue");
-
-        ResponseEntity<Faculty> response =
-                rest.postForEntity("/faculty", faculty, Faculty.class);
-
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    private Faculty createFaculty(String name, String color) {
+        return rest.postForObject("/faculty", new Faculty(null,name,color), Faculty.class);
     }
 
     @Test
     void getFacultyNotFound() {
         ResponseEntity<Faculty> response =
-                rest.getForEntity("/faculty/999999", Faculty.class);
+                rest.getForEntity("/faculty/99999", Faculty.class);
 
         Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void filterByColor() {
+        createFaculty("Gryffindor","Red");
+
+        ResponseEntity<Faculty[]> response =
+                rest.getForEntity("/faculty/filter?color=Red", Faculty[].class);
+
+        Assertions.assertTrue(response.getBody().length >= 1);
     }
 }

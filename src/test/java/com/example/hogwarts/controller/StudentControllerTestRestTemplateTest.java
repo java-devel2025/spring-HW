@@ -13,46 +13,81 @@ import org.springframework.http.ResponseEntity;
 class StudentControllerRestTemplateTest {
 
     @Autowired
-    private TestRestTemplate rest;
+    TestRestTemplate rest;
+
+    private Student createStudent(String name, int age) {
+        return rest.postForObject("/student", new Student(null, name, age), Student.class);
+    }
 
     @Test
-    void createAndGetStudent() {
-        Student request = new Student(null,"Harry",11);
+    void createStudent() {
+        Student student = createStudent("Гарик", 11);
+        Assertions.assertNotNull(student.getId());
+    }
 
-        Student created = rest.postForObject("/student", request, Student.class);
+    @Test
+    void getStudent() {
+        Student created = createStudent("Роман", 12);
 
         ResponseEntity<Student> response =
                 rest.getForEntity("/student/" + created.getId(), Student.class);
 
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-        Assertions.assertEquals("Harry", response.getBody().getName());
+        Assertions.assertEquals("Роман", response.getBody().getName());
     }
 
     @Test
-    void getAllStudents() {
-        ResponseEntity<Student[]> response =
-                rest.getForEntity("/student", Student[].class);
+    void getStudentNotFound() {
+        ResponseEntity<Student> response =
+                rest.getForEntity("/student/999999", Student.class);
 
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test
-    void filterStudents() {
-        ResponseEntity<Student[]> response =
-                rest.getForEntity("/student/filter?age=11", Student[].class);
+    void updateStudent() {
+        Student created = createStudent("Герман", 12);
+        created.setName("Герман Updated");
 
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        rest.put("/student", created);
+
+        Student updated =
+                rest.getForObject("/student/" + created.getId(), Student.class);
+
+        Assertions.assertEquals("Герман Updated", updated.getName());
     }
 
     @Test
     void deleteStudent() {
-        Student s = rest.postForObject("/student", new Student(null,"Ron",11), Student.class);
+        Student created = createStudent("Наиль", 11);
 
-        rest.delete("/student/" + s.getId());
+        rest.delete("/student/" + created.getId());
 
         ResponseEntity<Student> response =
-                rest.getForEntity("/student/" + s.getId(), Student.class);
+                rest.getForEntity("/student/" + created.getId(), Student.class);
 
         Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void filterByAge() {
+        createStudent("A", 15);
+        createStudent("B", 15);
+
+        ResponseEntity<Student[]> response =
+                rest.getForEntity("/student/filter?age=15", Student[].class);
+
+        Assertions.assertTrue(response.getBody().length >= 2);
+    }
+
+    @Test
+    void getAllStudents() {
+        createStudent("X", 10);
+        createStudent("Y", 11);
+
+        ResponseEntity<Student[]> response =
+                rest.getForEntity("/student", Student[].class);
+
+        Assertions.assertTrue(response.getBody().length >= 2);
     }
 }
