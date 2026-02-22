@@ -23,6 +23,9 @@ public class Student {
         this.age = age;
     }
 
+    @OneToOne(mappedBy = "student")
+    private Avatar avatar;
+
     @ManyToOne
     @JoinColumn(name = "faculty_id")
     private Faculty faculty;
@@ -78,6 +81,14 @@ public class Student {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", age=" + age + '}';
+    }
+
+    public Avatar getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Avatar avatar) {
+        this.avatar = avatar;
     }
 
 }

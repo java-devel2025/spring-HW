@@ -49,4 +49,17 @@ public class StudentService {
                 .orElse(null);
     }
 
+    public long getStudentsCount() {
+        return repository.getStudentsCount();
+    }
+
+    public double getAverageAge() {
+        Double avg = repository.getAverageAge();
+        return avg == null ? 0.0 : avg;
+    }
+
+    public List<Student> getLastFiveStudents() {
+        return repository.getLastFiveStudents();
+    }
+
 }
