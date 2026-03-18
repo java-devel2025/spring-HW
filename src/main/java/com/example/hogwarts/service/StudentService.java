@@ -4,10 +4,14 @@ import com.example.hogwarts.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 import com.example.hogwarts.model.Student;
 import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @Service
 public class StudentService {
+
+    private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     private final StudentRepository repository;
 
@@ -16,11 +20,18 @@ public class StudentService {
     }
 
     public Student create(Student student) {
+        logger.info("Was invoked method for create student");
         return repository.save(student);
     }
 
     public Student get(Long id) {
-        return repository.findById(id).orElse(null);
+        logger.info("Was invoked method for get student");
+
+        return repository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("No student with id = " + id);
+                    return new RuntimeException("Student not found");
+                });
     }
 
     public Student update(Student student) {
@@ -28,6 +39,13 @@ public class StudentService {
     }
 
     public void delete(Long id) {
+        logger.info("Was invoked method for delete student");
+
+        if (!repository.existsById(id)) {
+            logger.warn("Trying to delete non-existing student with id = {}", id);
+            throw new RuntimeException("Student not found");
+        }
+
         repository.deleteById(id);
     }
 
@@ -36,6 +54,9 @@ public class StudentService {
     }
 
     public List<Student> findByAge(int age) {
+        logger.info("Was invoked method for find students by age");
+        logger.debug("Searching students with age = {}", age);
+
         return repository.findByAge(age);
     }
 
