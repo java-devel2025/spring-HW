@@ -1,7 +1,9 @@
 package com.example.hogwarts.controller;
 import com.example.hogwarts.model.Faculty;
 import com.example.hogwarts.model.Student;
+import com.example.hogwarts.repository.StudentRepository;
 import com.example.hogwarts.service.StudentService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
@@ -68,14 +70,29 @@ public class StudentController {
         return service.getStudentsCount();
     }
 
-    @GetMapping("/average-age")
-    public double getAverageAge() {
-        return service.getAverageAge();
-    }
-
     @GetMapping("/last-five")
     public List<Student> getLastFiveStudents() {
         return service.getLastFiveStudents();
+    }
+
+    @Autowired
+    private StudentRepository studentRepository;
+
+    @GetMapping("/students/names-starting-with-a")
+    public List<String> getNamesStartingWithA() {
+        return studentRepository.findAll().stream()
+                .map(student -> student.getName().toUpperCase())
+                .filter(name -> name.startsWith("A"))
+                .sorted()
+                .toList();
+    }
+
+    @GetMapping("/average-age")
+    public double getAverageAge() {
+        return studentRepository.findAll().stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0);
     }
 }
 

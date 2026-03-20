@@ -1,13 +1,15 @@
 package com.example.hogwarts.controller;
-
 import com.example.hogwarts.model.Faculty;
 import com.example.hogwarts.model.Student;
+import com.example.hogwarts.repository.FacultyRepository;
 import com.example.hogwarts.service.FacultyService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/faculty")
@@ -59,5 +61,16 @@ public class FacultyController {
     @GetMapping("/{id}/students")
     public List<Student> getStudents(@PathVariable Long id) {
         return service.getStudents(id);
+    }
+
+    @Autowired
+    private FacultyRepository facultyRepository;
+
+    @GetMapping("/faculties/longest-name")
+    public String getLongestFacultyName() {
+        return facultyRepository.findAll().stream()
+                .map(Faculty::getName)
+                .max(Comparator.comparingInt(String::length))
+                .orElse("");
     }
 }
