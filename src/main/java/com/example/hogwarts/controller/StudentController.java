@@ -94,6 +94,58 @@ public class StudentController {
                 .average()
                 .orElse(0);
     }
+
+    @GetMapping("/students/print-parallel")
+    public void printParallel() {
+        List<Student> students = studentRepository.findAll();
+
+        // 1–2 в main thread
+        System.out.println(students.get(0).getName());
+        System.out.println(students.get(1).getName());
+
+        // 3–4 в thread1
+        new Thread(() -> {
+            System.out.println(students.get(2).getName());
+            System.out.println(students.get(3).getName());
+        }).start();
+
+        // 5–6 в thread2
+        new Thread(() -> {
+            System.out.println(students.get(4).getName());
+            System.out.println(students.get(5).getName());
+        }).start();
+    }
+
+    private synchronized void printName(String name) {
+        System.out.println(name);
+    }
+
+    @GetMapping("/students/print-synchronized")
+    public void printSynchronized() {
+        List<Student> students = studentRepository.findAll();
+
+        // 1–2 main thread
+        printName(students.get(0).getName());
+        printName(students.get(1).getName());
+
+        // 3–4 thread1
+        new Thread(() -> {
+            printName(students.get(2).getName());
+            printName(students.get(3).getName());
+        }).start();
+
+        // 5–6 thread2
+        new Thread(() -> {
+            printName(students.get(4).getName());
+            printName(students.get(5).getName());
+        }).start();
+
+        if (students.size() < 6) {
+            throw new RuntimeException("Недостаточно студентов");
+        }
+    }
+
+
 }
 
 
